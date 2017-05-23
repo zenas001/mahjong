@@ -1,1 +1,1 @@
-"# server" 
+直接运行"0.start_all.bat"脚本
