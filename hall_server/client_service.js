@@ -4,8 +4,12 @@ var db = require('../utils/db');
 var http = require('../utils/http');
 var room_service = require("./room_service");
 
+//暂时一人
 var app = express();
+
 var config = null;
+
+
 
 function check_account(req, res) {
     var account = req.query.account;
@@ -84,7 +88,6 @@ app.get('/login', function (req, res) {
         });
     });
 });
-/*---------------麻将相关------------------*/
 app.get('/create_user', function (req, res) {
     if (!check_account(req, res)) {
         return;
@@ -111,6 +114,7 @@ app.get('/create_user', function (req, res) {
         }
     });
 });
+/*---------------麻将------------------*/
 app.get('/create_private_room', function (req, res) {
     //验证参数合法性
     var data = req.query;
@@ -309,25 +313,81 @@ app.get('/is_server_online', function (req, res) {
     });
 });
 
-/*-------------2017-05-24 10:33:28 Add CardRoom------------*/
+/*-------------九点半 2017-05-24 10:33:28 ------------*/
 app.get('/create_card_room', function (req, res) {
+    //验证参数合法性
+    var data = req.query;
+    //验证玩家身份
+    if (!check_account(req, res)) {
+        return;
+    }
+    var account = data.account;
+    data.account = null;
+    data.sign = null;
+    var conf = data.conf;
+    db.get_user_data(account, function (data) {
+        if (data == null) {
+            http.send(res, 1, "system error");
+            return;
+        }
+        var userId = data.userid;
+        var name = data.name;
+        //验证玩家状态
+        db.get_room_id_of_user(userId, function (roomId) {
+            if (roomId != null) {
+                http.send(res, -1, "user is playing in room now.");
+                return;
+            }
+            //创建房间
+            room_service.createCardRoom(account, userId, conf, function (err, roomId) {
+                if (err == 0 && roomId != null) {
+                    room_service.enterCardRoom(userId, name, roomId, function (errcode, enterInfo) {
+                        if (enterInfo) {
+                            var ret = {
+                                roomid: roomId,
+                                ip: enterInfo.ip,
+                                port: enterInfo.port,
+                                token: enterInfo.token,
+                                time: Date.now()
+                            };
+                            ret.sign = crypto.md5(ret.roomid + ret.token + ret.time + config.ROOM_PRI_KEY);
+                            http.send(res, 0, "ok", ret);
+                        } else {
+                            http.send(res, errcode, "room doesn't exist.");
+                        }
+                    });
+                } else {
+                    http.send(res, err, "create failed.");
+                }
+            });
+        });
+    });
+});
+app.get('/enter_card_room', function (req, res) {
+    if (!check_account(req, res)) {
+        return;
+    }
+
+
 });
 
-app.get('/enter_card_room',function (req,res) {
+app.get('/get_card_room_info', function (req, res) {
+    if (!check_account(req, res)) {
+        return;
+    }
+
 });
 
-app.get('/get_card_room_info',function (req, res) {
-    
-});
+app.get('/create_card_user', function (req, res) {
+    if (!check_account(req, res)) {
+        return;
+    }
 
-app.get('/create_card_user',function (req, res) {
-    
 });
-
 
 
 exports.start = function ($config) {
     config = $config;
     app.listen(config.CLEINT_PORT);
     console.log("client service is listening on port " + config.CLEINT_PORT);
-};
+}

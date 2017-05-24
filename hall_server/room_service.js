@@ -230,6 +230,21 @@ exports.isServerOnline = function (ip, port, callback) {
     });
 };
 
+
+/*card room 2017-05-24 13:53:01*/
+
+exports.createCardRoom=function (account,userId,roomConf,fnCallback) {
+
+}
+
+exports.enterCardRoom=function (userId, name, roomId, fnCallback) {
+    
+}
+
+
+
+
+
 exports.start = function ($config) {
     config = $config;
     app.listen(config.ROOM_PORT, config.FOR_ROOM_IP);
