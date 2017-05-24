@@ -29,8 +29,9 @@ function shuffle(game) {
         cards[index] = {suit: suit, num: i};
         i++;
     }
-    var king = [{suit: 5, num: 14}, {suit: 6, num: 15}]//6:大王5:小王
-    cards = cards.concat(king);
+    //6:大王5:小王
+    cards.push({suit: 5, num: 14});
+    cards.push({suit: 6, num: 15});
 
     for (var i = 0; i < cards.length; ++i) {
         var lastIndex = cards.length - 1 - i;
