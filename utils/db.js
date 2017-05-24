@@ -23,7 +23,8 @@ function query(sql,callback){
 };
 
 exports.init = function(config){
-    pool = mysql.createPool({  
+    console.log('initialize database pool..');
+    pool = mysql.createPool({
         host: config.HOST,
         user: config.USER,
         password: config.PSWD,
