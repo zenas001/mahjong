@@ -827,11 +827,10 @@ function calculateResult(game,roomInfo){
                 
                 var extraScore = 0;
                 if(info.iszimo){
-                    if(game.conf.zimo == 0){
-                        //自摸加底
-                        extraScore = baseScore;
-                    }
-                    else if(game.conf.zimo == 1){
+                    // if(game.conf.zimo == 0){
+                    //     //自摸加底
+                    //     extraScore = baseScore;
+                    } else if(game.conf.zimo == 1){
                         fan += 1;
                     }
                     else{
@@ -1219,7 +1218,7 @@ exports.begin = function(roomId) {
         gameSeats:new Array(4),
 
         numOfQue:0,
-        turn:0,
+        turn:0,//当前座位
         chuPai:-1,
         state:"idle",
         firstHupai:-1,

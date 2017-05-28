@@ -19,8 +19,8 @@ function checkTingPai(seatData,begin,end){
 		var ret = checkCanHu(seatData);
 		if(ret){
 			//平胡 0番
-			seatData.tingMap[i] = {
-				pattern:"normal",
+                seatData.tingMap[i] = {
+                pattern:"normal",
                 fan:0
 			};
 		}
